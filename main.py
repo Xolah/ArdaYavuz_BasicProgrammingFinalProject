@@ -562,8 +562,6 @@ def mainGameLoop():
                             printSlow("1. Type '+craft' to make Patties (Meat+Bread)")
                             printSlow("2. Type '+craft' again to make ABSOLUTE BURGER (Patties+Lettuce+Tomato)")
                             textSeperator()
-
-                    textSeperator()
                 else:
                     print("You can't go that way.")
         
