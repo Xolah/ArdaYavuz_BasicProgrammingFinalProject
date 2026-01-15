@@ -454,6 +454,7 @@ def mainGameLoop():
             print("+go [place]   : Move to a room")
             print("+use [item]   : Eat food (permanently buffs stats)")
             print("+craft        : Combine ingredients")
+            print("+recipes      : Check the Cookbook.")
             print("+answer [text]: Solve puzzles")
             print("+quit         : Exit game")
             if player.current_room == "ROOM4":
@@ -462,6 +463,9 @@ def mainGameLoop():
                 print("+use computer : Hack terminal")
                 print("+enter [code] : Unlock door")
             textSeperator()
+            if player.current_room == "ROOM6":
+                print("+feed         : To give absolute burger to Selman Hoca.")
+                print("+eat          : You're starving. Absolute Burger smells awsome.")
         
         elif command == "+stats":
             player.printStats()
@@ -549,7 +553,7 @@ def mainGameLoop():
                             printSlow("With a final roar, The Prime Rib explodes into ingredients!")
                             printSlow("LOOT RAIN! You gathered everything needed for the final recipe:")
                             
-                            final_ingredients = ["meat", "bread", "lettuce", "tomato"]
+                            final_ingredients = [" meat", " bread", "golden lettuce", "golden tomato"]
                             
                             for ing in final_ingredients:
                                 if ing in player.inventory:
@@ -559,8 +563,8 @@ def mainGameLoop():
                                 printSlow(f"-> Acquired: {ing.upper()}")
                             
                             printSlow("\nNow you have everything!")
-                            printSlow("1. Type '+craft' to make Patties (Meat+Bread)")
-                            printSlow("2. Type '+craft' again to make ABSOLUTE BURGER (Patties+Lettuce+Tomato)")
+                            printSlow("1. Type '+craft 1' to make Patties (Meat+ Bread)")
+                            printSlow("2. Type '+craft 2' again to make ABSOLUTE BURGER (Patties + Golden Lettuce + Golden Tomato)")
                             textSeperator()
                 else:
                     print("You can't go that way.")
@@ -644,28 +648,51 @@ def mainGameLoop():
             textSeperator()
         
         elif command == "+craft":
-            if "meat" in player.inventory and "bread" in player.inventory:
-                player.inventory["meat"] -= 1
-                player.inventory["bread"] -= 1
-                if player.inventory["meat"] <= 0: del player.inventory["meat"]
-                if player.inventory["bread"] <= 0: del player.inventory["bread"]
-                
-                if "patties" in player.inventory: player.inventory["patties"] += 1
-                else: player.inventory["patties"] = 1
-                
-                printSlow("You crafted: HAMBURGER PATTIES!")
+            if not argument:
+                print("Craft what? Use: '+craft 1' or '+craft 2'")
+                print("1. Hamburger Patties (Meat + Bread)")
+                print("2. Absolute Burger (Patties + Golden Lettuce + Golden Tomato)")
+
+            elif argument == "1":
+                if "meat" in player.inventory and "bread" in player.inventory:
+                    player.inventory["meat"] -= 1
+                    player.inventory["bread"] -= 1
+                    
+                    if player.inventory["meat"] <= 0: del player.inventory["meat"]
+                    if player.inventory["bread"] <= 0: del player.inventory["bread"]
+                    
+                    if "patties" in player.inventory: player.inventory["patties"] += 1
+                    else: player.inventory["patties"] = 1
+                    
+                    printSlow("You mixed Meat and Bread... Crafted: HAMBURGER PATTIES!")
+                else:
+                    print("You don't have enough ingredients for Patties (Need Meat + Bread).")
+
+            elif argument == "2":
+                if "patties" in player.inventory and "golden lettuce" in player.inventory and "golden tomato" in player.inventory:
+                    player.inventory["golden patties"] -= 1
+                    player.inventory["golden lettuce"] -= 1
+                    player.inventory["golden tomato"] -= 1
+                    
+                    if player.inventory["patties"] <= 0: del player.inventory["patties"]
+                    if player.inventory["golden lettuce"] <= 0: del player.inventory["golden lettuce"]
+                    if player.inventory["golden tomato"] <= 0: del player.inventory["golden tomato"]
+
+                    printSlow("Mixing the legendary ingredients...")
+                    time.sleep(1)
+                    printSlow("You crafted: THE ABSOLUTE BURGER!")
+                    player.inventory["absolute burger"] = 1
+                    
+                    if player.current_room == "ROOM6":
+                        textSeperator()
+                        printSlow("Selman Hoca sees the burger. His eyes open wide.")
+                        printSlow("DECISION TIME: Type '+feed' to save him OR '+eat' to betray him.")
+                else:
+                    print("You don't have enough ingredients for Absolute Burger.")
+                    print("(Need Patties + Golden Lettuce + Golden Tomato)")
             
-            elif "patties" in player.inventory and "lettuce" in player.inventory and "tomato" in player.inventory:
-                printSlow("Mixing ingredients...")
-                time.sleep(1)
-                printSlow("You crafted: THE ABSOLUTE BURGER!")
-                player.inventory["absolute burger"] = 1
-                
-                if player.current_room == "ROOM6":
-                    textSeperator()
-                    printSlow("Selman Hoca sees the burger. Use '+feed' to save him or '+eat' to betray him.")
             else:
-                print("You don't have enough ingredients. (Need Meat+Bread -> Patties, then Patties+Lettuce+Tomato)")
+                print("Unknown recipe number. Type '+recipes' to see the cookbook.")
 
         elif command == "+feed":
             if "absolute burger" in player.inventory and player.current_room == "ROOM6":
@@ -723,7 +750,7 @@ def mainGameLoop():
                 print("There is no puzzle here.")
 
         elif command == "+craft":
-            if "meat" in player.inventory and "bread" in player.inventory:
+            if "meat" in player.inventory and "bread" in player.inventory and argument == "1":
                 player.inventory["meat"] -= 1
                 player.inventory["bread"] -= 1
                 if player.inventory["meat"] <= 0: del player.inventory["meat"]
@@ -734,7 +761,7 @@ def mainGameLoop():
                 
                 printSlow("You mixed Meat and Bread... Crafted: HAMBURGER PATTIES!")
             
-            elif "patties" in player.inventory and "lettuce" in player.inventory and "tomato" in player.inventory:
+            elif "patties" in player.inventory and "lettuce" in player.inventory and "tomato" in player.inventory and argument == "1":
                 player.inventory["patties"] -= 1
                 player.inventory["lettuce"] -= 1
                 player.inventory["tomato"] -= 1
